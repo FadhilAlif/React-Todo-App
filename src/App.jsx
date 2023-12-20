@@ -1,35 +1,75 @@
-import { useState } from 'react'
-import reactLogo from './assets/react.svg'
-import viteLogo from '/vite.svg'
-import './App.css'
+import { useEffect, useState } from "react";
+import Header from "./components/Header/Header";
+import Tasks from "./components/Tasks/Tasks";
 
 function App() {
-  const [count, setCount] = useState(0)
+  const [tasks, setTasks] = useState([]);
+
+  const loadSaveTasks = () => {
+    const savedTasks = localStorage.getItem("tasks");
+    console.log("saved tasks", savedTasks);
+    if (savedTasks) {
+      setTasks(JSON.parse(savedTasks));
+    }
+  };
+
+  useEffect(() => {
+    loadSaveTasks();
+  }, []);
+
+  const setTasksAndSave = (tasksToSave) => {
+    setTasks(tasksToSave);
+    localStorage.setItem("tasks", JSON.stringify(tasksToSave));
+  };
+
+  const addTask = (taskTitle) => {
+    setTasksAndSave([
+      ...tasks,
+      {
+        id: Math.floor(Math.random() * 69696969),
+        title: taskTitle,
+        completed: false,
+      },
+    ]);
+  };
+
+  const toggleTaskCompleted = (taskId) => {
+    setTasksAndSave(
+      tasks.map((task) => {
+        if (task.id === taskId) {
+          return { ...task, completed: !task.completed };
+        }
+        return task;
+      })
+    );
+  };
+
+  const editTask = (taskId, editedTitle) => {
+    setTasksAndSave(
+      tasks.map((task) => {
+        if (task.id === taskId) {
+          return { ...task, title: editedTitle };
+        }
+        return task;
+      })
+    );
+  };
+
+  const deleteTask = (taskId) => {
+    setTasksAndSave(tasks.filter((task) => task.id !== taskId));
+  };
 
   return (
-    <>
-      <div>
-        <a href="https://vitejs.dev" target="_blank">
-          <img src={viteLogo} className="logo" alt="Vite logo" />
-        </a>
-        <a href="https://react.dev" target="_blank">
-          <img src={reactLogo} className="logo react" alt="React logo" />
-        </a>
-      </div>
-      <h1>Vite + React</h1>
-      <div className="card">
-        <button onClick={() => setCount((count) => count + 1)}>
-          count is {count}
-        </button>
-        <p>
-          Edit <code>src/App.jsx</code> and save to test HMR
-        </p>
-      </div>
-      <p className="read-the-docs">
-        Click on the Vite and React logos to learn more
-      </p>
-    </>
-  )
+    <div>
+      <Header onAddTask={addTask} />
+      <Tasks
+        tasks={tasks}
+        onCompleted={toggleTaskCompleted}
+        onDelete={deleteTask}
+        onEdit={editTask}
+      />
+    </div>
+  );
 }
 
-export default App
+export default App;

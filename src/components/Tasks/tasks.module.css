@@ -1,0 +1,35 @@
+.tasks {
+  width: 100px;
+  min-width: 740px;
+  margin: 90px auto;
+  padding: 0 1rem;
+  font-family: "Inter", sans-serif;
+}
+
+.header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 24px;
+}
+
+.header > div {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.header p {
+  color: #576cbc;
+  font-size: 14px;
+  font-weight: 700;
+}
+
+.header span {
+  font-size: 12px;
+  font-weight: 700;
+  background: #576cbc;
+  color: #ffffff;
+  padding: 3px 9px;
+  border-radius: 1000px;
+}
