@@ -10,7 +10,6 @@ function App() {
 
   const loadSaveTasks = () => {
     const savedTasks = localStorage.getItem("tasks");
-    console.log("saved tasks", savedTasks);
     if (savedTasks) {
       setTasks(JSON.parse(savedTasks));
     }
