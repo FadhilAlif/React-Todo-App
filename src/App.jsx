@@ -1,6 +1,9 @@
 import { useEffect, useState } from "react";
 import Header from "./components/Header/Header";
 import Tasks from "./components/Tasks/Tasks";
+import { ToastContainer } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
+import { notify } from "./utils/toastify";
 
 function App() {
   const [tasks, setTasks] = useState([]);
@@ -37,7 +40,20 @@ function App() {
     setTasksAndSave(
       tasks.map((task) => {
         if (task.id === taskId) {
-          return { ...task, completed: !task.completed };
+          const updatedTask = { ...task, completed: !task.completed };
+
+          // Show toast notification based on task completion status
+          if (updatedTask.completed) {
+            notify(`Task "${task.title}" completed`, {
+              type: "success",
+            });
+          } else {
+            notify(`Task "${task.title}" incomplete`, {
+              type: "info",
+            });
+          }
+
+          return updatedTask;
         }
         return task;
       })
@@ -56,7 +72,11 @@ function App() {
   };
 
   const deleteTask = (taskId) => {
-    setTasksAndSave(tasks.filter((task) => task.id !== taskId));
+    const taskToDelete = tasks.find((task) => task.id === taskId);
+    if (taskToDelete) {
+      setTasksAndSave(tasks.filter((task) => task.id !== taskId));
+      notify(`Task "${taskToDelete.title}" deleted`, { type: "error" });
+    }
   };
 
   return (
@@ -68,6 +88,7 @@ function App() {
         onDelete={deleteTask}
         onEdit={editTask}
       />
+      <ToastContainer />
     </div>
   );
 }

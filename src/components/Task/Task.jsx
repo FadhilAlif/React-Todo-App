@@ -3,6 +3,7 @@ import styles from "./task.module.css";
 import { FaTrash, FaRegEdit, FaSave } from "react-icons/fa";
 import { BsCheckCircleFill } from "react-icons/bs";
 import { MdEditOff } from "react-icons/md";
+import { notify } from "../../utils/toastify";
 
 const Task = ({ task, onCompleted, onDelete, onEdit }) => {
   const [editTask, setEditTask] = useState(false);
@@ -15,14 +16,26 @@ const Task = ({ task, onCompleted, onDelete, onEdit }) => {
   };
 
   const handleSaveClick = () => {
+    if (editedTitle.trim() === "") {
+      notify("Please provide a task title", { type: "error" });
+      return;
+    }
+
+    if (editedTitle === task.title) {
+      notify("Task is not modified", { type: "info" });
+      return;
+    }
+
     onEdit(task.id, editedTitle);
     setEditTask(false);
+    notify("Task updated successfully", { type: "success" });
   };
 
   const handleCancelClick = () => {
     setEditedTitle(task.title);
     setEditTask(false);
   };
+
   return (
     <div className={styles.task}>
       <button
